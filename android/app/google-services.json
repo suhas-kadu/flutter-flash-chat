@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1084673264723",
+    "project_id": "flash-chat-36a60",
+    "storage_bucket": "flash-chat-36a60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084673264723:android:2ed62792dc10ed2ac04aa6",
+        "android_client_info": {
+          "package_name": "co.suhaskadu.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084673264723-fopkl96kmag6ml43hu65hpemnse42bpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKsxTn8UG4B-HEn0fb2aQDdIIDFjF5i8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084673264723-fopkl96kmag6ml43hu65hpemnse42bpp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
