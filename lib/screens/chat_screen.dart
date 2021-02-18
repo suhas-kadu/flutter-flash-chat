@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
+import 'package:intl/intl.dart';
+
+String now = DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser;
@@ -16,7 +19,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
-
+  // static int msgid = 1;
   String messageText;
   final messageController = new TextEditingController();
 
@@ -24,12 +27,21 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+    // getId();
   }
+
+  // void getId() async {
+  //   final firstId = await _firestore.collection("messages").get();
+  //   for(var msgId in firstId.docs){
+  //       id = msgId.data()["id"];
+  //       print(id);
+  //   }
+  // }
 
   void getCurrentUser() async {
     try {
-      // ignore: await_only_futures
-      final user = await _auth.currentUser;
+      // final user = await _auth.currentUser;
+      final user = _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
 
@@ -49,14 +61,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // }
 
-  void messagesStream() async {
-    await for (var snapshot in _firestore.collection("messages").snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: null,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.close),
+              icon: Icon(Icons.logout),
               onPressed: () {
                 // messagesStream();
                 // emailController.clear();
@@ -100,10 +104,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      //Implement send functionality.
                       messageController.clear();
-                      _firestore.collection("messages").add(
-                          {"text": messageText, "sender": loggedInUser.email});
+
+                      // print("id: $msgid");
+                      _firestore.collection("messages").add({
+                        "text": messageText,
+                        "sender": loggedInUser.email,
+                      });
+                      // msgid++;
                     },
                     child: Text(
                       'Send',
@@ -126,23 +134,17 @@ class MessagesStream extends StatelessWidget {
     return StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection("messages").snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text("Error in snapshot"),
-            );
-          }
           if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.lightBlue,
-              ),
-            );
+            print("No data in snapshot");
           }
+
           final messages = snapshot.data.docs.reversed;
+
           List<MessageBubble> messageBubbles = [];
           for (var message in messages) {
             final messageText = message.data()['text'];
             final messageSender = message.data()['sender'];
+
             final currentUser = loggedInUser.email;
 
             final messageBubble = MessageBubble(
@@ -150,11 +152,14 @@ class MessagesStream extends StatelessWidget {
               messageSender: messageSender,
               isMe: currentUser == messageSender,
             );
+
             messageBubbles.add(messageBubble);
           }
           return Expanded(
             child: ListView(
                 reverse: true,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 children: messageBubbles),
           );
@@ -163,16 +168,17 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-  const MessageBubble({
+  final messageText;
+  final messageSender;
+  final bool isMe;
+
+  MessageBubble({
     Key key,
     @required this.messageText,
     @required this.messageSender,
     this.isMe,
-  }) : super(key: key);
+  });
 
-  final messageText;
-  final messageSender;
-  final bool isMe;
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -14,7 +14,7 @@ import 'screens/registration_screen.dart';
 import 'screens/welcome_screen.dart';
 
 Future<void> main() async {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Constants.prefs = await SharedPreferences.getInstance();
   runApp(FlashChat());
@@ -25,6 +25,7 @@ class FlashChat extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // initialRoute: WelcomeScreen.id,
       initialRoute: Constants.prefs.getBool("loggedIn") == true ? ChatScreen.id : WelcomeScreen.id,
       // home: Constants.prefs.getBool("loggedIn") == true ? ChatScreen : WelcomeScreen,
       routes: <String, WidgetBuilder>{
@@ -33,12 +34,6 @@ class FlashChat extends StatelessWidget {
         LoginScreen.id : (context) => LoginScreen(),
         RegistrationScreen.id : (context) => RegistrationScreen()
       },
-      // theme: ThemeData.dark().copyWith(
-      //   textTheme: TextTheme(
-      //     body1: TextStyle(color: Colors.black54),
-      //   ),
-      // ),
-      //home: WelcomeScreen(),
     );
   }
 }

@@ -86,6 +86,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         // Fluttertoast.showToast(msg: "An email verification link has been sent to your account\nPlease verify your email");
                         if (newUser != null) {
                           Fluttertoast.showToast(
+                            toastLength: Toast.LENGTH_LONG,
                             msg:
                                   "An email verification link has been sent to your account\nPlease verify your email");
 
